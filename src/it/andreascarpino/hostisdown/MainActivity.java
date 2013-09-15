@@ -1,13 +1,10 @@
 package it.andreascarpino.hostisdown;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
-
-import java.io.IOException;
+import it.andreascarpino.hostisdown.task.PingTask;
 
 public class MainActivity extends Activity {
     /**
@@ -20,22 +17,17 @@ public class MainActivity extends Activity {
     }
 
     public void checkHost(View view) {
+        // disable the check button
+        findViewById(R.id.checkButton).setEnabled(false);
+
+        // reset the previous result
+        findViewById(R.id.hostStatus).setVisibility(View.INVISIBLE);
+
+        // start the progress bar
+        findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+
+        // ping the host
         String host = ((EditText) findViewById(R.id.host)).getText().toString();
-
-        try {
-            Process process = new ProcessBuilder()
-                    .command("/system/bin/ping", "-c 3", "-q", host)
-                    .redirectErrorStream(true)
-                    .start();
-
-            if (process.waitFor() == 0) {
-                ((TextView) findViewById(R.id.downup)).setText(R.string.upTxt);
-                ((TextView) findViewById(R.id.downup)).setTextColor(Color.GREEN);
-            }
-
-            findViewById(R.id.hostStatus).setVisibility(View.VISIBLE);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        new PingTask(view.getRootView()).execute(host);
     }
 }
