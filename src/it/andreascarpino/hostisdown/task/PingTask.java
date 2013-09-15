@@ -48,7 +48,9 @@ public class PingTask extends AsyncTask<String, Void, Integer> {
                     .command("/system/bin/ping", "-c 1", "-q", hosts[0])
                     .redirectErrorStream(true)
                     .start().waitFor();
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
