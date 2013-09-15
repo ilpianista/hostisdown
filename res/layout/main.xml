@@ -8,7 +8,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
         <EditText
-                android:layout_width="fill_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/host"
                 android:inputType="text"
@@ -16,7 +16,7 @@
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/checkTxt"
+                android:text="@string/check"
                 android:id="@+id/checkButton"
                 android:onClick="checkHost"/>
     </LinearLayout>
@@ -37,24 +37,23 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hostIsTxt"
+                android:text="@string/hostIs"
                 android:textSize="20dp" android:paddingRight="2dp"/>
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/downTxt"
                 android:id="@+id/downup"
                 android:textSize="22dp"/>
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="!"
+                android:text="@string/exclamationMark"
                 android:textSize="20dp" android:paddingLeft="2dp"/>
     </LinearLayout>
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/recentTxt"
+            android:text="@string/recent"
             android:id="@+id/textView"/>
     <ListView
             android:layout_width="fill_parent"

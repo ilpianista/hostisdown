@@ -35,10 +35,10 @@ public class PingTask extends AsyncTask<String, Void, Integer> {
         super.onPostExecute(ret);
 
         if (ret == 0) {
-            ((TextView) this.view.findViewById(R.id.downup)).setText(R.string.upTxt);
+            ((TextView) this.view.findViewById(R.id.downup)).setText(R.string.up);
             ((TextView) this.view.findViewById(R.id.downup)).setTextColor(Color.GREEN);
         } else {
-            ((TextView) this.view.findViewById(R.id.downup)).setText(R.string.downTxt);
+            ((TextView) this.view.findViewById(R.id.downup)).setText(R.string.down);
             ((TextView) this.view.findViewById(R.id.downup)).setTextColor(Color.RED);
         }
 

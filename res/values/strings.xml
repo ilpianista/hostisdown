@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">HostIsDown</string>
-    <string name="checkTxt">Check</string>
-    <string name="hostIsTxt">The host is</string>
-    <string name="downTxt">DOWN</string>
-    <string name="upTxt">UP</string>
-    <string name="recentTxt">Recent hosts:</string>
+    <string name="check">Check</string>
+    <string name="hostIs">The host is</string>
+    <string name="down">DOWN</string>
+    <string name="up">UP</string>
+    <string name="exclamationMark">!</string>
+    <string name="recent">Recent hosts:</string>
+    <string name="about">About</string>
 </resources>
