@@ -63,11 +63,15 @@ public class PingTask extends AsyncTask<String, Void, Integer> {
         super.onPostExecute(ret);
 
         if (ret == 0) {
-            ((TextView) this.view.findViewById(R.id.downup)).setText(R.string.up);
-            ((TextView) this.view.findViewById(R.id.downup)).setTextColor(Color.GREEN);
+            ((TextView) this.view.findViewById(R.id.downup)).setText(R.string
+                    .up);
+            ((TextView) this.view.findViewById(R.id.downup)).setTextColor
+                    (Color.GREEN);
         } else {
-            ((TextView) this.view.findViewById(R.id.downup)).setText(R.string.down);
-            ((TextView) this.view.findViewById(R.id.downup)).setTextColor(Color.RED);
+            ((TextView) this.view.findViewById(R.id.downup)).setText(R.string
+                    .down);
+            ((TextView) this.view.findViewById(R.id.downup)).setTextColor
+                    (Color.RED);
         }
 
         // stop the progress bar

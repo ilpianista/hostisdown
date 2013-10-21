@@ -79,7 +79,8 @@ public class MainActivity extends Activity {
             try {
                 builder.setMessage(
                         getString(R.string.app_name) + " " +
-                        this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName +
+                        this.getPackageManager().getPackageInfo(this
+                                .getPackageName(), 0).versionName +
                         "\n\n" +
                         "License: MIT\n" +
                         "Copyright: 2013\n" +
