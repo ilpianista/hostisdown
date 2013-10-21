@@ -57,9 +57,11 @@ public class MainActivity extends Activity {
         // start the progress bar
         findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
 
-        // ping the host
         String host = ((EditText) findViewById(R.id.host)).getText().toString();
-        new PingTask(view.getRootView()).execute(host);
+        String params = "-c 1 -q";
+
+        // ping the host
+        new PingTask(view.getRootView()).execute(params, host);
     }
 
     @Override

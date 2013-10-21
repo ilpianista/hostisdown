@@ -42,11 +42,12 @@ public class PingTask extends AsyncTask<String, Void, Integer> {
     }
 
     @Override
-    protected Integer doInBackground(String... hosts) {
+    protected Integer doInBackground(String... params) {
         try {
             return new ProcessBuilder()
-                    .command("/system/bin/ping", "-c 1", "-q", hosts[0])
-                    .redirectErrorStream(true)
+                    .command("/system/bin/ping",
+                             params[1],
+                             params[0])
                     .start().waitFor();
         } catch (IOException e) {
             e.printStackTrace();
