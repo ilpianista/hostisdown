@@ -8,4 +8,5 @@
     <string name="exclamationMark">!</string>
     <string name="recent">Recent hosts:</string>
     <string name="about">About</string>
+    <string name="clear">Clear recent hosts</string>
 </resources>

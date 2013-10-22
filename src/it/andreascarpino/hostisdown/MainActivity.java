@@ -28,15 +28,24 @@ package it.andreascarpino.hostisdown;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.*;
+import it.andreascarpino.hostisdown.db.Host;
+import it.andreascarpino.hostisdown.db.HostsDataSource;
 import it.andreascarpino.hostisdown.task.PingTask;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends Activity {
+
+    private HostsDataSource datasource;
+    public static List<Host> hosts = new ArrayList<>();
 
     /**
      * Called when the activity is first created.
@@ -45,6 +54,26 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        datasource = new HostsDataSource(this);
+        datasource.open();
+
+        hosts.addAll(datasource.getAllHosts());
+
+        // Support old devices
+        int layout = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
+                android.R.layout.simple_list_item_activated_1
+                : android.R.layout.simple_list_item_1;
+
+        ListView listView = (ListView) findViewById(R.id.listView);
+        listView.setAdapter(new ArrayAdapter<>(this, layout, hosts));
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ((TextView) findViewById(R.id.host)).setText(
+                        ((Host) adapterView.getItemAtPosition(i)).getName());
+            }
+        });
     }
 
     public void checkHost(View view) {
@@ -61,7 +90,7 @@ public class MainActivity extends Activity {
         String params = "-c 1 -q";
 
         // ping the host
-        new PingTask(view.getRootView()).execute(params, host);
+        new PingTask(view.getRootView()).execute(host, params);
     }
 
     @Override
@@ -79,12 +108,12 @@ public class MainActivity extends Activity {
             try {
                 builder.setMessage(
                         getString(R.string.app_name) + " " +
-                        this.getPackageManager().getPackageInfo(this
-                                .getPackageName(), 0).versionName +
-                        "\n\n" +
-                        "License: MIT\n" +
-                        "Copyright: 2013\n" +
-                        "Andrea Scarpino <me@andreascarpino.it>")
+                                this.getPackageManager().getPackageInfo(this
+                                        .getPackageName(), 0).versionName +
+                                "\n\n" +
+                                "License: MIT\n" +
+                                "Copyright: 2013\n" +
+                                "Andrea Scarpino <me@andreascarpino.it>")
                         .setTitle("About");
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
@@ -92,11 +121,23 @@ public class MainActivity extends Activity {
 
             AlertDialog about = builder.create();
             about.show();
-
-            return true;
+        } else if (R.id.clear == item.getItemId()) {
+            findViewById(R.id.hostStatus).setVisibility(View.INVISIBLE);
+            datasource.clearHosts();
+            hosts.clear();
+            ((BaseAdapter) ((ListView) findViewById(R.id.listView))
+                    .getAdapter()).notifyDataSetChanged();
+        } else {
+            return false;
         }
 
-        return false;
+        return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        datasource.close();
     }
 
 }

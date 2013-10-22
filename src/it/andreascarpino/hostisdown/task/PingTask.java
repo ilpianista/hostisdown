@@ -28,13 +28,19 @@ package it.andreascarpino.hostisdown.task;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+import it.andreascarpino.hostisdown.MainActivity;
 import it.andreascarpino.hostisdown.R;
+import it.andreascarpino.hostisdown.db.HostsDataSource;
+import it.andreascarpino.hostisdown.db.State;
 
 import java.io.IOException;
 
 public class PingTask extends AsyncTask<String, Void, Integer> {
 
+    private String host;
     private View view;
 
     public PingTask(View view) {
@@ -44,14 +50,13 @@ public class PingTask extends AsyncTask<String, Void, Integer> {
     @Override
     protected Integer doInBackground(String... params) {
         try {
+            host = params[0];
             return new ProcessBuilder()
                     .command("/system/bin/ping",
                              params[1],
-                             params[0])
+                             host)
                     .start().waitFor();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -62,16 +67,19 @@ public class PingTask extends AsyncTask<String, Void, Integer> {
     protected void onPostExecute(Integer ret) {
         super.onPostExecute(ret);
 
+        State status;
         if (ret == 0) {
             ((TextView) this.view.findViewById(R.id.downup)).setText(R.string
                     .up);
             ((TextView) this.view.findViewById(R.id.downup)).setTextColor
                     (Color.GREEN);
+            status = State.Up;
         } else {
             ((TextView) this.view.findViewById(R.id.downup)).setText(R.string
                     .down);
             ((TextView) this.view.findViewById(R.id.downup)).setTextColor
                     (Color.RED);
+            status = State.Down;
         }
 
         // stop the progress bar
@@ -82,5 +90,18 @@ public class PingTask extends AsyncTask<String, Void, Integer> {
 
         // re-enable the check button
         this.view.findViewById(R.id.checkButton).setEnabled(true);
+
+        // save in the db
+        HostsDataSource datasource = new HostsDataSource(view.getContext());
+        datasource.open();
+        datasource.createHost(host, System.currentTimeMillis(), status);
+
+        // refresh the recent hosts list
+        MainActivity.hosts.clear();
+        MainActivity.hosts.addAll(datasource.getAllHosts());
+        ((BaseAdapter) ((ListView) view.findViewById(R.id.listView))
+                .getAdapter()).notifyDataSetChanged();
+
+        datasource.close();
     }
 }
