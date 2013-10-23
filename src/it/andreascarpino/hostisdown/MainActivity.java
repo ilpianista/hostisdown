@@ -48,7 +48,7 @@ import java.util.List;
 public class MainActivity extends Activity {
 
     private static HostsDataSource datasource;
-    private static List<Host> hosts = new ArrayList<>();
+    private static List<Host> hosts = new ArrayList<Host>();
 
     /**
      * Called when the activity is first created.
@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
                 : android.R.layout.simple_list_item_1;
 
         ListView listView = (ListView) findViewById(R.id.listView);
-        listView.setAdapter(new ArrayAdapter<>(this, layout, hosts));
+        listView.setAdapter(new ArrayAdapter<Host>(this, layout, hosts));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view,
@@ -169,7 +169,9 @@ public class MainActivity extends Activity {
                                 params[1],
                                 this.host)
                         .start().waitFor();
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 

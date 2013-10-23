@@ -78,7 +78,7 @@ public class HostsDataSource {
     }
 
     public List<Host> getAllHosts() {
-        List<Host> hosts = new ArrayList<>();
+        List<Host> hosts = new ArrayList<Host>();
 
         Cursor cursor = database.query(HostsOpenHelper.HOSTS_TABLE_NAME,
                 allColumns, null, null, null, null,
@@ -123,9 +123,10 @@ public class HostsDataSource {
 
         host.setName(cursor.getString(0));
         host.setDate(cursor.getLong(1));
-        switch (cursor.getString(2)) {
-            case "Down": host.setStatus(State.Down); break;
-            case "Up": host.setStatus(State.Up);
+        if (cursor.getString(2).equals("Down")) {
+            host.setStatus(State.Down);
+        } else {
+            host.setStatus(State.Up);
         }
 
         return host;
