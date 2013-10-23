@@ -41,11 +41,9 @@ import java.io.IOException;
 public class PingTask extends AsyncTask<String, Void, Integer> {
 
     private String host;
-    private View view;
     private Activity activity;
 
-    public PingTask(View view, Activity activity) {
-        this.view = view;
+    public PingTask(Activity activity) {
         this.activity = activity;
     }
 
@@ -73,32 +71,32 @@ public class PingTask extends AsyncTask<String, Void, Integer> {
 
         State status;
         if (ret == 0) {
-            ((TextView) this.view.findViewById(R.id.downup)).setText(R
+            ((TextView) this.activity.findViewById(R.id.downup)).setText(R
                     .string.up);
-            ((TextView) this.view.findViewById(R.id.downup)).setTextColor
+            ((TextView) this.activity.findViewById(R.id.downup)).setTextColor
                     (Color.GREEN);
             status = State.Up;
         } else {
-            ((TextView) this.view.findViewById(R.id.downup)).setText(R
+            ((TextView) this.activity.findViewById(R.id.downup)).setText(R
                     .string.down);
-            ((TextView) this.view.findViewById(R.id.downup)).setTextColor
+            ((TextView) this.activity.findViewById(R.id.downup)).setTextColor
                     (Color.RED);
             status = State.Down;
         }
 
         // stop the progress bar
-        this.view.findViewById(R.id.progressBar).setVisibility(View
+        this.activity.findViewById(R.id.progressBar).setVisibility(View
                 .INVISIBLE);
 
         // display the result
-        this.view.findViewById(R.id.hostStatus).setVisibility(View
+        this.activity.findViewById(R.id.hostStatus).setVisibility(View
                 .VISIBLE);
 
         // clean the host text
-        ((EditText) this.view.findViewById(R.id.host)).setText("");
+        ((EditText) this.activity.findViewById(R.id.host)).setText("");
 
         // re-enable the check button
-        this.view.findViewById(R.id.checkButton).setEnabled(true);
+        this.activity.findViewById(R.id.checkButton).setEnabled(true);
 
         // save in the db
         HostsDataSource datasource = new HostsDataSource(this.activity);

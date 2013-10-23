@@ -105,7 +105,7 @@ public class MainActivity extends Activity {
             String params = "-c 1 -q";
 
             // ping the host
-            new PingTask(view, this).execute(host, params);
+            new PingTask(this).execute(host, params);
         }
     }
 

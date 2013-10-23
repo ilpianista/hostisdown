@@ -57,7 +57,7 @@ public class HostsDataSource {
         Host host = getHost(name);
 
         if (host != null) {
-            host = updateHost(name, date);
+            host = updateHost(name, date, status);
         } else {
             ContentValues values = new ContentValues();
             values.put(HostsOpenHelper.COLUMN_NAME, name);
@@ -108,9 +108,14 @@ public class HostsDataSource {
         return host;
     }
 
-    public Host updateHost(String name, Long date) {
+    public Host updateHost(String name, Long date, State status) {
         ContentValues values = new ContentValues();
         values.put(HostsOpenHelper.COLUMN_DATE, date);
+        switch (status) {
+            case Down: values.put(HostsOpenHelper.COLUMN_STATUS,
+                    "Down"); break;
+            case Up: values.put(HostsOpenHelper.COLUMN_STATUS, "Up");
+        }
 
         database.update(HostsOpenHelper.HOSTS_TABLE_NAME, values,
                 HostsOpenHelper.COLUMN_NAME + " = ?", new String[]{ name });
