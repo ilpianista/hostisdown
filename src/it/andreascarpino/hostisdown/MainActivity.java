@@ -40,6 +40,7 @@ import android.widget.*;
 import it.andreascarpino.hostisdown.db.Host;
 import it.andreascarpino.hostisdown.db.HostsDataSource;
 import it.andreascarpino.hostisdown.db.State;
+import it.andreascarpino.hostisdown.utils.Net;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -87,21 +88,28 @@ public class MainActivity extends Activity {
     }
 
     public void checkHost(View view) {
-        // disable the check button
-        findViewById(R.id.checkButton).setEnabled(false);
+        if (!Net.isConnected(this)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.no_network));
+            AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+            // disable the check button
+            findViewById(R.id.checkButton).setEnabled(false);
 
-        // reset the previous result
-        findViewById(R.id.hostStatus).setVisibility(View.INVISIBLE);
+            // reset the previous result
+            findViewById(R.id.hostStatus).setVisibility(View.INVISIBLE);
 
-        // start the progress bar
-        findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+            // start the progress bar
+            findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
 
-        String host = ((EditText) findViewById(R.id.host)).getText()
-                .toString();
-        String params = "-c 1 -q";
+            String host = ((EditText) findViewById(R.id.host)).getText()
+                    .toString();
+            String params = "-c 1 -q";
 
-        // ping the host
-        new PingTask(view.getRootView()).execute(host, params);
+            // ping the host
+            new PingTask(view.getRootView()).execute(host, params);
+        }
     }
 
     @Override

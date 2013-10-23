@@ -9,4 +9,6 @@
     <string name="recent">Recent hosts:</string>
     <string name="about">About</string>
     <string name="clear">Clear recent hosts</string>
+    <string name="no_network">No network connection.\nPlease check your
+        network and try again.</string>
 </resources>
