@@ -28,6 +28,8 @@ package it.andreascarpino.hostisdown;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -37,15 +39,16 @@ import android.view.View;
 import android.widget.*;
 import it.andreascarpino.hostisdown.db.Host;
 import it.andreascarpino.hostisdown.db.HostsDataSource;
-import it.andreascarpino.hostisdown.task.PingTask;
+import it.andreascarpino.hostisdown.db.State;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends Activity {
 
-    private HostsDataSource datasource;
-    public static List<Host> hosts = new ArrayList<>();
+    private static HostsDataSource datasource;
+    private static List<Host> hosts = new ArrayList<>();
 
     /**
      * Called when the activity is first created.
@@ -57,7 +60,13 @@ public class MainActivity extends Activity {
 
         datasource = new HostsDataSource(this);
         datasource.open();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        hosts.clear();
         hosts.addAll(datasource.getAllHosts());
 
         // Support old devices
@@ -69,7 +78,8 @@ public class MainActivity extends Activity {
         listView.setAdapter(new ArrayAdapter<>(this, layout, hosts));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view,
+                                    int i, long l) {
                 ((TextView) findViewById(R.id.host)).setText(
                         ((Host) adapterView.getItemAtPosition(i)).getName());
             }
@@ -86,7 +96,8 @@ public class MainActivity extends Activity {
         // start the progress bar
         findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
 
-        String host = ((EditText) findViewById(R.id.host)).getText().toString();
+        String host = ((EditText) findViewById(R.id.host)).getText()
+                .toString();
         String params = "-c 1 -q";
 
         // ping the host
@@ -138,6 +149,73 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         datasource.close();
+    }
+
+    private static class PingTask extends AsyncTask<String, Void, Integer> {
+
+        private String host;
+        private View view;
+
+        public PingTask(View view) {
+            this.view = view;
+        }
+
+        @Override
+        protected Integer doInBackground(String... params) {
+            try {
+                this.host = params[0];
+                return new ProcessBuilder()
+                        .command("/system/bin/ping",
+                                params[1],
+                                this.host)
+                        .start().waitFor();
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            return 1;
+        }
+
+        @Override
+        protected void onPostExecute(Integer ret) {
+            super.onPostExecute(ret);
+
+            State status;
+            if (ret == 0) {
+                ((TextView) this.view.findViewById(R.id.downup)).setText(R
+                        .string.up);
+                ((TextView) this.view.findViewById(R.id.downup)).setTextColor
+                        (Color.GREEN);
+                status = State.Up;
+            } else {
+                ((TextView) this.view.findViewById(R.id.downup)).setText(R
+                        .string.down);
+                ((TextView) this.view.findViewById(R.id.downup)).setTextColor
+                        (Color.RED);
+                status = State.Down;
+            }
+
+            // stop the progress bar
+            this.view.findViewById(R.id.progressBar).setVisibility(View
+                    .INVISIBLE);
+
+            // display the result
+            this.view.findViewById(R.id.hostStatus).setVisibility(View
+                    .VISIBLE);
+
+            // re-enable the check button
+            this.view.findViewById(R.id.checkButton).setEnabled(true);
+
+            // save in the db
+            datasource.createHost(this.host, System.currentTimeMillis(),
+                    status);
+
+            // refresh the recent hosts list
+            hosts.clear();
+            hosts.addAll(datasource.getAllHosts());
+            ((BaseAdapter) ((ListView) this.view.findViewById(R.id.listView))
+                    .getAdapter()).notifyDataSetChanged();
+        }
     }
 
 }
