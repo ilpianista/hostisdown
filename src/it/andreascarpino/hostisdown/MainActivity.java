@@ -203,6 +203,9 @@ public class MainActivity extends Activity {
             this.view.findViewById(R.id.hostStatus).setVisibility(View
                     .VISIBLE);
 
+            // clean the host text
+            ((EditText) this.view.findViewById(R.id.host)).setText("");
+
             // re-enable the check button
             this.view.findViewById(R.id.checkButton).setEnabled(true);
 
