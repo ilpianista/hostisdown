@@ -1,7 +1,7 @@
 /*
   MIT license:
 
-        Copyright (c) 2013 Andrea Scarpino
+        Copyright (c) 2013-2014 Andrea Scarpino
 
         Permission is hereby granted, free of charge, to any person obtaining
         a copy of this software and associated documentation files (the
@@ -111,11 +111,7 @@ public class HostsDataSource {
     public Host updateHost(String name, Long date, State status) {
         ContentValues values = new ContentValues();
         values.put(HostsOpenHelper.COLUMN_DATE, date);
-        switch (status) {
-            case Down: values.put(HostsOpenHelper.COLUMN_STATUS,
-                    "Down"); break;
-            case Up: values.put(HostsOpenHelper.COLUMN_STATUS, "Up");
-        }
+        values.put(HostsOpenHelper.COLUMN_STATUS, status.toString().toUpperCase());
 
         database.update(HostsOpenHelper.HOSTS_TABLE_NAME, values,
                 HostsOpenHelper.COLUMN_NAME + " = ?", new String[]{ name });
@@ -128,10 +124,12 @@ public class HostsDataSource {
 
         host.setName(cursor.getString(0));
         host.setDate(cursor.getLong(1));
-        if (cursor.getString(2).equals("Down")) {
-            host.setStatus(State.Down);
-        } else {
+        if (cursor.getString(2).equalsIgnoreCase("Up")) {
             host.setStatus(State.Up);
+        } else if (cursor.getString(2).equalsIgnoreCase("Unknown")) {
+            host.setStatus(State.Unknown);
+        } else {
+            host.setStatus(State.Down);
         }
 
         return host;

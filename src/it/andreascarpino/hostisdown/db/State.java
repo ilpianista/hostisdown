@@ -1,7 +1,7 @@
 /*
   MIT license:
 
-        Copyright (c) 2013 Andrea Scarpino
+        Copyright (c) 2013-2014 Andrea Scarpino
 
         Permission is hereby granted, free of charge, to any person obtaining
         a copy of this software and associated documentation files (the
@@ -26,5 +26,5 @@
 package it.andreascarpino.hostisdown.db;
 
 public enum State {
-    Down,Up
+    Down, Unknown, Up
 }

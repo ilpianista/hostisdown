@@ -1,7 +1,7 @@
 /*
   MIT license:
 
-        Copyright (c) 2013 Andrea Scarpino
+        Copyright (c) 2013-2014 Andrea Scarpino
 
         Permission is hereby granted, free of charge, to any person obtaining
         a copy of this software and associated documentation files (the
@@ -100,8 +100,7 @@ public class MainActivity extends Activity {
             // start the progress bar
             findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
 
-            String host = ((EditText) findViewById(R.id.host)).getText()
-                    .toString();
+            String host = ((EditText) findViewById(R.id.host)).getText().toString();
             String params = "-c 1 -q";
 
             // ping the host

@@ -4,7 +4,7 @@ HostIsDown
 An android application to check if the desired host is down.
 
 ## Features
-- Ping a host by IP/hostname and return its status
+- Ping a host by IP/hostname and return its status (up, down or unknown host)
 - Show the list of recent hosts
 - TODO: monitor the host status and notify when it goes down
 

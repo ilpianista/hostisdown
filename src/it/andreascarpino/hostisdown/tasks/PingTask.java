@@ -1,7 +1,7 @@
 /*
 MIT license:
 
-   Copyright (c) 2013 Andrea Scarpino
+   Copyright (c) 2013-2014 Andrea Scarpino
 
    Permission is hereby granted, free of charge, to any person obtaining
    a copy of this software and associated documentation files (the
@@ -69,28 +69,29 @@ public class PingTask extends AsyncTask<String, Void, Integer> {
     protected void onPostExecute(Integer ret) {
         super.onPostExecute(ret);
 
-        State status;
-        if (ret == 0) {
-            ((TextView) this.activity.findViewById(R.id.downup)).setText(R
-                    .string.up);
-            ((TextView) this.activity.findViewById(R.id.downup)).setTextColor
-                    (Color.GREEN);
-            status = State.Up;
-        } else {
-            ((TextView) this.activity.findViewById(R.id.downup)).setText(R
-                    .string.down);
-            ((TextView) this.activity.findViewById(R.id.downup)).setTextColor
-                    (Color.RED);
-            status = State.Down;
+        State status = State.Down;
+        switch (ret) {
+            case 0:
+                ((TextView) this.activity.findViewById(R.id.downup)).setText(R.string.up);
+                ((TextView) this.activity.findViewById(R.id.downup)).setTextColor(Color.GREEN);
+                status = State.Up;
+                break;
+            case 1:
+                ((TextView) this.activity.findViewById(R.id.downup)).setText(R.string.down);
+                ((TextView) this.activity.findViewById(R.id.downup)).setTextColor(Color.RED);
+                break;
+            case 2:
+                ((TextView) this.activity.findViewById(R.id.downup)).setText(R.string.unknown);
+                ((TextView) this.activity.findViewById(R.id.downup)).setTextColor(Color.YELLOW);
+                status = State.Unknown;
+                break;
         }
 
         // stop the progress bar
-        this.activity.findViewById(R.id.progressBar).setVisibility(View
-                .INVISIBLE);
+        this.activity.findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
 
         // display the result
-        this.activity.findViewById(R.id.hostStatus).setVisibility(View
-                .VISIBLE);
+        this.activity.findViewById(R.id.hostStatus).setVisibility(View.VISIBLE);
 
         // clean the host text
         ((EditText) this.activity.findViewById(R.id.host)).setText("");
@@ -99,7 +100,7 @@ public class PingTask extends AsyncTask<String, Void, Integer> {
         this.activity.findViewById(R.id.checkButton).setEnabled(true);
 
         // save in the db
-        HostsDataSource datasource = new HostsDataSource(this.activity);
+        final HostsDataSource datasource = new HostsDataSource(this.activity);
         datasource.open();
         datasource.createHost(this.host, System.currentTimeMillis(), status);
         datasource.close();
